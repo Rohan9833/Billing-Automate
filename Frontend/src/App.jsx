@@ -3,7 +3,7 @@ import { PDFDocument, rgb, StandardFonts } from "pdf-lib";
 import * as pdfjsLib from "pdfjs-dist";
 import workerSrc from "pdfjs-dist/build/pdf.worker.min.mjs?url";
 
-import "./app.css";
+import "./App.css";
 
 pdfjsLib.GlobalWorkerOptions.workerSrc = workerSrc;
 
