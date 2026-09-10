@@ -285,6 +285,7 @@ function Home() {
         if (amount) {
           addText(page, font, amount.toFixed(2), 445, y, 10);
         }
+         srNo++;
       });
 
       // =========================
