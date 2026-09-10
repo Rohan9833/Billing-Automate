@@ -255,6 +255,7 @@ function Home() {
 
       const firstRowY = 488;
       const rowHeight = 20;
+      let srNo = 1;
 
       items.forEach((item, index) => {
         const y = firstRowY - index * rowHeight;
@@ -268,6 +269,7 @@ function Home() {
 
         // Sr. No.
         addText(page, font, srNo, 82, y, 10);
+        srNo++;
 
         // Particulars
         addText(page, font, item.particulars, 108, y, 10);
@@ -285,7 +287,6 @@ function Home() {
         if (amount) {
           addText(page, font, amount.toFixed(2), 445, y, 10);
         }
-         srNo++;
       });
 
       // =========================
