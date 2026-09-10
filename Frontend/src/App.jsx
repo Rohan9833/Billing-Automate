@@ -235,7 +235,7 @@ function Home() {
 
       //   // State
       //   addText(page, font, form.state, 371, 535, 8);
-//dasdasdas
+      //dasdasdas
       //   // State Code
       //   addText(page, font, form.stateCode, 491, 535, 8);
       // Name / Invoice / Date
@@ -247,9 +247,9 @@ function Home() {
       addText(page, font, form.gstin, 170, 535, 10);
       addText(page, font, form.state, 371, 535, 10);
       addText(page, font, form.stateCode, 491, 535, 11);
-//asdjdhasj
+      //asdjdhasj
       // =========================
-      
+
       // ITEMS
       // =========================
 
@@ -265,6 +265,9 @@ function Home() {
         }
 
         const amount = getAmount(item);
+
+        // Sr. No.
+        addText(page, font, srNo, 82, y, 10);
 
         // Particulars
         addText(page, font, item.particulars, 108, y, 10);
