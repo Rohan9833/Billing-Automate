@@ -285,10 +285,19 @@ function Home() {
 
         // Amount
         if (amount) {
-          addText(page, font, amount.toFixed(2), 445, y, 10);
+          const [rupees, paise] = amount.toFixed(2).split(".");
+
+          // Rupees
+          addText(page, font, rupees, 445, y, 10);
+
+          // Paise
+          addText(page, font, paise, 512.5, y, 10);
         }
       });
 
+      // =========================
+      // TOTALS
+      // =========================
       // =========================
       // TOTALS
       // =========================
@@ -298,23 +307,34 @@ function Home() {
       const sgst = getSgstAmount();
       const grandTotal = getGrandTotal();
 
+      // Helper for Rupees + Paise
+      const addAmountWithPaise = (amount, rupeesX, paiseX, y) => {
+        const [rupees, paise] = amount.toFixed(2).split(".");
+
+        // Rupees
+        addText(page, font, rupees, rupeesX, y, 10);
+
+        // Paise
+        addText(page, font, paise, paiseX, y, 10);
+      };
+
       // Total
-      addText(page, font, total.toFixed(2), 460, 243, 10);
+      addAmountWithPaise(total, 460, 512.5, 243);
 
       // CGST %
       addText(page, font, form.cgst ? `${form.cgst}` : "", 400, 216, 10);
 
       // CGST Amount
-      addText(page, font, cgst.toFixed(2), 470, 219, 10);
+      addAmountWithPaise(cgst, 470, 512.5, 221);
 
       // SGST %
       addText(page, font, form.sgst ? `${form.sgst}` : "", 400, 192, 10);
 
       // SGST Amount
-      addText(page, font, sgst.toFixed(2), 470, 195, 10);
+      addAmountWithPaise(sgst, 470, 512.5, 197);
 
       // Grand Total
-      addText(page, font, grandTotal.toFixed(2), 448, 168, 10);
+      addAmountWithPaise(grandTotal, 448, 512.5, 170);
 
       // =========================
       // AMOUNT IN WORDS
