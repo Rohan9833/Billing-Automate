@@ -317,48 +317,48 @@ function Quotation() {
       // Quotation For
       addText(page, font, form.quotationFor, 168, 532, 10);
 
-// =========================
-// ITEMS
-// =========================
+      // =========================
+      // ITEMS
+      // =========================
 
-let y = 485;
-let srNo = 1;
+      let y = 485;
+      let srNo = 1;
 
-items.forEach((item) => {
-  if (!item.particulars && !item.hsn && !item.qty && !item.rate) {
-    return;
-  }
+      items.forEach((item) => {
+        if (!item.particulars && !item.hsn && !item.qty && !item.rate) {
+          return;
+        }
 
-  const amount = getAmount(item);
+        const amount = getAmount(item);
 
-  // Sr No
-  addText(page, font, srNo, 80, y, 9);
+        // Sr No
+        addText(page, font, srNo, 80, y, 9);
 
-  // Particulars
-  addText(page, font, item.particulars, 108, y, 9);
+        // Particulars
+        addText(page, font, item.particulars, 108, y, 9);
 
-  // HSN
-  addText(page, font, item.hsn, 302, y, 9);
+        // HSN
+        addText(page, font, item.hsn, 302, y, 9);
 
-  // Qty
-  addText(page, font, item.qty, 360, y, 9);
+        // Qty
+        addText(page, font, item.qty, 360, y, 9);
 
-  // Rate
-  addText(page, font, item.rate, 402, y, 9);
+        // Rate
+        addText(page, font, item.rate, 402, y, 9);
 
-  // Amount
-  if (amount) {
-    const [rupees, paise] = amount.toFixed(2).split(".");
+        // Amount
+        if (amount) {
+          const [rupees, paise] = amount.toFixed(2).split(".");
 
-    addText(page, font, rupees, 445, y, 9);
-    addText(page, font, paise, 512.5, y, 9);
-  }
+          addText(page, font, rupees, 445, y, 9);
+          addText(page, font, paise, 512.5, y, 9);
+        }
 
-  srNo++;
+        srNo++;
 
-  // Next PDF row
-  y -= 18.6;
-});
+        // Next PDF row
+        y -= 18.6;
+      });
 
       // =========================
       // TOTALS
@@ -489,7 +489,12 @@ items.forEach((item) => {
     if (!pdfUrl) return;
 
     try {
-      const pdf = await pdfjsLib.getDocument(pdfUrl).promise;
+      const response = await fetch(pdfUrl);
+      const pdfBytes = await response.arrayBuffer();
+
+      const pdf = await pdfjsLib.getDocument({
+        data: pdfBytes,
+      }).promise;
 
       const page = await pdf.getPage(1);
 
@@ -498,11 +503,9 @@ items.forEach((item) => {
       });
 
       const canvas = document.createElement("canvas");
-
       const context = canvas.getContext("2d");
 
       canvas.width = viewport.width;
-
       canvas.height = viewport.height;
 
       await page.render({
@@ -515,15 +518,13 @@ items.forEach((item) => {
       const link = document.createElement("a");
 
       link.href = image;
-
       link.download = `${form.quotationFor || "quotation"}.png`;
 
       document.body.appendChild(link);
       link.click();
       link.remove();
     } catch (error) {
-      console.error(error);
-
+      console.error("Quotation image generation error:", error);
       alert("Image generate nahi ho payi.");
     }
   };
