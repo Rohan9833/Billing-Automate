@@ -483,46 +483,51 @@ function Home() {
     link.remove();
   };
 
-  const downloadImage = async () => {
-    if (!pdfUrl) return;
+const downloadImage = async () => {
+  if (!pdfUrl) return;
 
-    try {
-      const pdf = await pdfjsLib.getDocument(pdfUrl).promise;
+  try {
+    const response = await fetch(pdfUrl);
+    const pdfBytes = await response.arrayBuffer();
 
-      const page = await pdf.getPage(1);
+    const pdf = await pdfjsLib.getDocument({
+      data: pdfBytes,
+    }).promise;
 
-      const viewport = page.getViewport({
-        scale: 2,
-      });
+    const page = await pdf.getPage(1);
 
-      const canvas = document.createElement("canvas");
+    const viewport = page.getViewport({
+      scale: 2,
+    });
 
-      const context = canvas.getContext("2d");
+    const canvas = document.createElement("canvas");
+    const context = canvas.getContext("2d");
 
-      canvas.width = viewport.width;
-      canvas.height = viewport.height;
+    canvas.width = viewport.width;
+    canvas.height = viewport.height;
 
-      await page.render({
-        canvasContext: context,
-        viewport,
-      }).promise;
+    await page.render({
+      canvasContext: context,
+      viewport,
+    }).promise;
 
-      const image = canvas.toDataURL("image/png");
+    const image = canvas.toDataURL("image/png");
 
-      const link = document.createElement("a");
+    const link = document.createElement("a");
 
-      link.href = image;
-      link.download = `${form.invoiceNo || "invoice"}.png`;
+    link.href = image;
+    link.download = `${
+      form.invoiceNo || "invoice"
+    }.png`;
 
-      document.body.appendChild(link);
-      link.click();
-      link.remove();
-    } catch (error) {
-      console.error(error);
-
-      alert("Image generate nahi ho payi.");
-    }
-  };
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+  } catch (error) {
+    console.error("Image generation error:", error);
+    alert("Image generate nahi ho payi.");
+  }
+};
 
   return (
     <div className="home">
