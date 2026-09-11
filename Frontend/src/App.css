@@ -18,7 +18,7 @@
 .page-title {
   margin-bottom: 24px;
 }
-  
+
 .page-title h1 {
   margin: 0;
   font-size: 30px;
@@ -83,7 +83,6 @@
 .items-title {
   margin-top: 30px;
 }
-
 
 /* ITEMS */
 
@@ -163,7 +162,6 @@
   background: #fafafa;
 }
 
-
 /* ADD ITEM */
 
 .add-item-btn {
@@ -186,7 +184,6 @@
 .add-item-btn:hover {
   background: #f2f2f2;
 }
-
 
 /* GST */
 
@@ -229,7 +226,6 @@
   background: #f7f7f7;
 }
 
-
 /* GENERATE */
 
 .generate-btn {
@@ -258,7 +254,6 @@
   opacity: 0.6;
   cursor: not-allowed;
 }
-
 
 /* PREVIEW */
 
@@ -318,7 +313,6 @@
   background: #555;
 }
 
-
 /* =========================
    TABLET
 ========================= */
@@ -358,7 +352,6 @@
   }
 }
 
-
 /* =========================
    MOBILE
 ========================= */
@@ -392,7 +385,6 @@
     margin-bottom: 14px;
   }
 
-
   /* CUSTOMER */
 
   .form-grid {
@@ -413,7 +405,6 @@
     padding: 0 11px;
     font-size: 14px;
   }
-
 
   /* ITEMS */
 
@@ -451,14 +442,12 @@
     height: 34px;
   }
 
-
   /* ADD ITEM */
 
   .add-item-btn {
     height: 46px;
     margin-top: 10px;
   }
-
 
   /* GST */
 
@@ -481,14 +470,12 @@
     font-size: 14px;
   }
 
-
   /* GENERATE */
 
   .generate-btn {
     height: 46px;
     margin-top: 18px;
   }
-
 
   /* PREVIEW */
 
@@ -517,7 +504,6 @@
     height: 45px;
   }
 }
-
 
 /* =========================
    SMALL PHONE
@@ -548,5 +534,213 @@
 
   .pdf-preview {
     height: 450px;
+  }
+}
+
+/* =========================
+   INVOICE HISTORY
+========================= */
+
+.history-card {
+  margin-top: 24px;
+  background: #ffffff;
+  border: 1px solid #e8ece9;
+  border-radius: 18px;
+  padding: 24px;
+  box-shadow: 0 8px 30px rgba(20, 50, 35, 0.06);
+}
+
+.history-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.history-header h2 {
+  margin: 0;
+  font-size: 20px;
+  color: #17251d;
+}
+
+.history-header p {
+  margin: 5px 0 0;
+  color: #7a847d;
+  font-size: 13px;
+}
+
+.history-count {
+  padding: 7px 12px;
+  border-radius: 20px;
+  background: #edf5ef;
+  color: #2f6543;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.history-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.history-item {
+  display: grid;
+  grid-template-columns: 1.8fr 1fr 1fr auto;
+  align-items: center;
+  gap: 20px;
+  padding: 15px 16px;
+  border: 1px solid #edf0ed;
+  border-radius: 13px;
+  background: #fbfcfb;
+  transition: 0.2s ease;
+}
+
+.history-item:hover {
+  border-color: #d8e4da;
+  background: #ffffff;
+}
+
+.history-main {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+}
+
+.history-icon {
+  width: 38px;
+  height: 38px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+  background: #e8f2ea;
+  color: #2f6543;
+  font-weight: 700;
+}
+
+.history-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.history-info strong {
+  color: #1c2921;
+  font-size: 14px;
+}
+
+.history-info span {
+  color: #7c857f;
+  font-size: 12px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.history-date {
+  color: #69746d;
+  font-size: 13px;
+}
+
+.history-total {
+  color: #1e3025;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.history-actions {
+  display: flex;
+  gap: 7px;
+}
+
+.history-actions button {
+  border: none;
+  cursor: pointer;
+  border-radius: 8px;
+  padding: 8px 12px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.history-view-btn {
+  background: #eaf3ec;
+  color: #2f6543;
+}
+
+.history-view-btn:hover {
+  background: #dcebdd;
+}
+
+.history-delete-btn {
+  background: #fff0f0;
+  color: #c04a4a;
+}
+
+.history-delete-btn:hover {
+  background: #ffe1e1;
+}
+
+/* =========================
+   MOBILE
+========================= */
+
+@media (max-width: 768px) {
+  .history-card {
+    padding: 18px;
+    border-radius: 15px;
+  }
+
+  .history-header {
+    align-items: flex-start;
+  }
+
+  .history-item {
+    grid-template-columns: 1fr auto;
+    gap: 12px;
+  }
+
+  .history-date {
+    text-align: right;
+  }
+
+  .history-total {
+    grid-column: 1;
+  }
+
+  .history-actions {
+    grid-column: 2;
+    grid-row: 2;
+  }
+}
+
+@media (max-width: 480px) {
+  .history-header {
+    flex-direction: column;
+  }
+
+  .history-item {
+    grid-template-columns: 1fr;
+  }
+
+  .history-date {
+    text-align: left;
+  }
+
+  .history-total {
+    grid-column: auto;
+  }
+
+  .history-actions {
+    grid-column: auto;
+    grid-row: auto;
+  }
+
+  .history-actions button {
+    flex: 1;
   }
 }
