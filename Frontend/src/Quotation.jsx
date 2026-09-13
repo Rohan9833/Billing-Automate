@@ -96,7 +96,7 @@ function Quotation() {
   };
 
   const getGrandTotal = () => {
-    return getTotal() + getCgstAmount() + getSgstAmount();
+    return Math.round(getTotal() + getCgstAmount() + getSgstAmount());
   };
 
   const numberToWords = (number) => {

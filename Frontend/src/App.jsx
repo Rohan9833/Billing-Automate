@@ -104,7 +104,7 @@ function Home() {
   };
 
   const getGrandTotal = () => {
-    return getTotal() + getCgstAmount() + getSgstAmount();
+    return Math.round(getTotal() + getCgstAmount() + getSgstAmount());
   };
 
   const numberToWords = (number) => {
@@ -246,10 +246,7 @@ function Home() {
 
       const updatedHistory = [invoice, ...currentHistory];
 
-      localStorage.setItem(
-        "invoiceHistory",
-        JSON.stringify(updatedHistory),
-      );
+      localStorage.setItem("invoiceHistory", JSON.stringify(updatedHistory));
 
       setHistory(updatedHistory);
     } finally {
@@ -262,10 +259,7 @@ function Home() {
 
     setHistory(updatedHistory);
 
-    localStorage.setItem(
-      "invoiceHistory",
-      JSON.stringify(updatedHistory),
-    );
+    localStorage.setItem("invoiceHistory", JSON.stringify(updatedHistory));
   };
 
   const loadHistory = (invoice) => {
@@ -483,56 +477,53 @@ function Home() {
     link.remove();
   };
 
-const downloadImage = async () => {
-  if (!pdfUrl) return;
+  const downloadImage = async () => {
+    if (!pdfUrl) return;
 
-  try {
-    const response = await fetch(pdfUrl);
-    const pdfBytes = await response.arrayBuffer();
+    try {
+      const response = await fetch(pdfUrl);
+      const pdfBytes = await response.arrayBuffer();
 
-    const pdf = await pdfjsLib.getDocument({
-      data: pdfBytes,
-    }).promise;
+      const pdf = await pdfjsLib.getDocument({
+        data: pdfBytes,
+      }).promise;
 
-    const page = await pdf.getPage(1);
+      const page = await pdf.getPage(1);
 
-    const viewport = page.getViewport({
-      scale: 2,
-    });
+      const viewport = page.getViewport({
+        scale: 2,
+      });
 
-    const canvas = document.createElement("canvas");
-    const context = canvas.getContext("2d");
+      const canvas = document.createElement("canvas");
+      const context = canvas.getContext("2d");
 
-    canvas.width = viewport.width;
-    canvas.height = viewport.height;
+      canvas.width = viewport.width;
+      canvas.height = viewport.height;
 
-    await page.render({
-      canvasContext: context,
-      viewport,
-    }).promise;
+      await page.render({
+        canvasContext: context,
+        viewport,
+      }).promise;
 
-    const image = canvas.toDataURL("image/png");
+      const image = canvas.toDataURL("image/png");
 
-    const link = document.createElement("a");
+      const link = document.createElement("a");
 
-    link.href = image;
-    link.download = `${
-      form.invoiceNo || "invoice"
-    }.png`;
+      link.href = image;
+      link.download = `${form.invoiceNo || "invoice"}.png`;
 
-    document.body.appendChild(link);
-    link.click();
-    link.remove();
-  } catch (error) {
-    console.error("Image generation error:", error);
-    alert("Image generate nahi ho payi.");
-  }
-};
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+    } catch (error) {
+      console.error("Image generation error:", error);
+      alert("Image generate nahi ho payi.");
+    }
+  };
 
   return (
     <div className="home">
       <div className="container">
-
         {/* DOCUMENT TOGGLE */}
 
         <div
@@ -561,8 +552,7 @@ const downloadImage = async () => {
                 borderRadius: "9px",
                 background:
                   documentType === "invoice" ? "#2f6543" : "transparent",
-                color:
-                  documentType === "invoice" ? "#ffffff" : "#53635a",
+                color: documentType === "invoice" ? "#ffffff" : "#53635a",
                 fontWeight: "600",
                 fontSize: "13px",
               }}
@@ -580,8 +570,7 @@ const downloadImage = async () => {
                 borderRadius: "9px",
                 background:
                   documentType === "quotation" ? "#2f6543" : "transparent",
-                color:
-                  documentType === "quotation" ? "#ffffff" : "#53635a",
+                color: documentType === "quotation" ? "#ffffff" : "#53635a",
                 fontWeight: "600",
                 fontSize: "13px",
               }}
@@ -756,9 +745,7 @@ const downloadImage = async () => {
                       <div className="item-amount">
                         <span>Amount</span>
 
-                        <strong>
-                          ₹ {getAmount(item).toFixed(2)}
-                        </strong>
+                        <strong>₹ {getAmount(item).toFixed(2)}</strong>
                       </div>
                     </div>
                   </div>
@@ -767,11 +754,7 @@ const downloadImage = async () => {
 
               {/* ADD ITEM */}
 
-              <button
-                type="button"
-                className="add-item-btn"
-                onClick={addItem}
-              >
+              <button type="button" className="add-item-btn" onClick={addItem}>
                 + Add Item
               </button>
 
@@ -891,23 +874,17 @@ const downloadImage = async () => {
 
                         <div className="history-info">
                           <strong>
-                            {invoice.invoiceNo ||
-                              "No Invoice Number"}
+                            {invoice.invoiceNo || "No Invoice Number"}
                           </strong>
 
-                          <span>
-                            {invoice.name || "Unknown Customer"}
-                          </span>
+                          <span>{invoice.name || "Unknown Customer"}</span>
                         </div>
                       </div>
 
-                      <div className="history-date">
-                        {invoice.date || "-"}
-                      </div>
+                      <div className="history-date">{invoice.date || "-"}</div>
 
                       <div className="history-total">
-                        ₹{" "}
-                        {Number(invoice.grandTotal || 0).toFixed(2)}
+                        ₹ {Number(invoice.grandTotal || 0).toFixed(2)}
                       </div>
 
                       <div className="history-actions">
@@ -922,9 +899,7 @@ const downloadImage = async () => {
                         <button
                           type="button"
                           className="history-delete-btn"
-                          onClick={() =>
-                            deleteHistory(invoice.id)
-                          }
+                          onClick={() => deleteHistory(invoice.id)}
                         >
                           Delete
                         </button>
