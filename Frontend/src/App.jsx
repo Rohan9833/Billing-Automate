@@ -309,9 +309,7 @@ function Home() {
       }
 
       const pdfDoc = await PDFDocument.load(templateBytes);
-
       const page = pdfDoc.getPages()[0];
-
       const font = await pdfDoc.embedFont(StandardFonts.Helvetica);
 
       // =========================
@@ -329,23 +327,25 @@ function Home() {
       // =========================
       // ITEMS
       // =========================
-
+      // The PDF template has 12 item rows before the totals section.
+      // Keep one fixed 20pt step for every real item so there is never
+      // an increasing/decreasing gap between entries.
       const firstRowY = 488;
       const rowHeight = 20;
-      const maxInvoiceRows = 13;
-      let srNo = 1;
+      const maxInvoiceRows = 12;
 
-      items.slice(0, maxInvoiceRows).forEach((item, index) => {
+      const invoiceItems = items
+        .filter(
+          (item) =>
+            item.particulars || item.hsn || item.qty || item.rate,
+        )
+        .slice(0, maxInvoiceRows);
+
+      invoiceItems.forEach((item, index) => {
         const y = firstRowY - index * rowHeight;
-
-        if (!item.particulars && !item.hsn && !item.qty && !item.rate) {
-          return;
-        }
-
         const amount = getAmount(item);
 
-        addText(page, font, srNo, 82, y, 10);
-        srNo++;
+        addText(page, font, index + 1, 82, y, 10);
 
         addText(page, font, item.particulars, 108, y, 10);
         addText(page, font, item.hsn, 302, y, 10);
@@ -354,8 +354,10 @@ function Home() {
 
         if (amount) {
           const [rupees, paise] = amount.toFixed(2).split(".");
+          const rupeesWidth = font.widthOfTextAtSize(rupees, 10);
 
-          addText(page, font, rupees, 445, y, 10);
+          // Keep the rupee amount inside its column even for large numbers.
+          addText(page, font, rupees, 507 - rupeesWidth, y, 10);
           addText(page, font, paise, 512.5, y, 10);
         }
       });
@@ -369,33 +371,45 @@ function Home() {
       const sgst = getSgstAmount();
       const grandTotal = getGrandTotal();
 
-      const addAmountWithPaise = (amount, rupeesX, paiseX, y) => {
-        const [rupees, paise] = amount.toFixed(2).split(".");
+      // These coordinates match the fixed totals rows already present
+      // in invoice-template.pdf. Do not move them with the item count.
+      const totalY = 243;
+      const cgstY = 216;
+      const sgstY = 192;
+      const grandTotalY = 168;
 
-        addText(page, font, rupees, rupeesX, y, 10);
-        addText(page, font, paise, paiseX, y, 10);
+      const addAmountWithPaise = (amount, y) => {
+        const [rupees, paise] = amount.toFixed(2).split(".");
+        const rupeesWidth = font.widthOfTextAtSize(rupees, 10);
+
+        // Right-align the rupee part so it never runs into the paise column.
+        addText(page, font, rupees, 507 - rupeesWidth, y, 10);
+        addText(page, font, paise, 512.5, y, 10);
       };
 
-      // Row 13 ends at the top of the totals section. Keep the complete
-      // totals block one full item-row below it so it never overlaps the
-      // last item. The four totals rows keep their original 24/24/27pt
-      // internal spacing.
-      const totalY = 223;
-      const cgstY = 199;
-      const sgstY = 175;
-      const grandTotalY = 148;
+      addAmountWithPaise(total, totalY);
 
-      addAmountWithPaise(total, 460, 512.5, totalY);
+      addText(
+        page,
+        font,
+        form.cgst ? `${form.cgst}` : "",
+        400,
+        cgstY + 3,
+        10,
+      );
+      addAmountWithPaise(cgst, cgstY);
 
-      addText(page, font, form.cgst ? `${form.cgst}` : "", 400, cgstY + 3, 10);
+      addText(
+        page,
+        font,
+        form.sgst ? `${form.sgst}` : "",
+        400,
+        sgstY + 3,
+        10,
+      );
+      addAmountWithPaise(sgst, sgstY);
 
-      addAmountWithPaise(cgst, 470, 512.5, cgstY);
-
-      addText(page, font, form.sgst ? `${form.sgst}` : "", 400, sgstY + 3, 10);
-
-      addAmountWithPaise(sgst, 470, 512.5, sgstY);
-
-      addAmountWithPaise(grandTotal, 448, 512.5, grandTotalY);
+      addAmountWithPaise(grandTotal, grandTotalY);
 
       // =========================
       // AMOUNT IN WORDS
@@ -404,14 +418,14 @@ function Home() {
       const amountInWords = numberToWords(grandTotal);
       const words = amountInWords.split(" ");
 
-      // Keep the amount-in-words text within the left-side ruled area.
-      // The totals column begins on the right, so use the actual font width
-      // rather than character count to decide where a line wraps.
+      // This text belongs below the TOTAL row, on the left side only.
+      // Keeping it lower prevents it from crossing the TOTAL / CGST rows.
       const wordStartX = 88;
       const wordMaxWidth = 382;
       const wordSize = 8;
-      const lineHeight = 12;
-      const wordStartY = 224;
+      const lineHeight = 11;
+      const wordStartY = 211;
+      const wordMinY = 184;
 
       let currentLine = "";
       let lineY = wordStartY;
@@ -432,12 +446,12 @@ function Home() {
 
         currentLine = word;
 
-        if (lineY < 192) {
+        if (lineY < wordMinY) {
           break;
         }
       }
 
-      if (currentLine && lineY >= 192) {
+      if (currentLine && lineY >= wordMinY) {
         addText(page, font, currentLine, wordStartX, lineY, wordSize);
       }
 
