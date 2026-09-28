@@ -376,17 +376,26 @@ function Home() {
         addText(page, font, paise, paiseX, y, 10);
       };
 
-      addAmountWithPaise(total, 460, 512.5, 243);
+      // Row 13 ends at the top of the totals section. Keep the complete
+      // totals block one full item-row below it so it never overlaps the
+      // last item. The four totals rows keep their original 24/24/27pt
+      // internal spacing.
+      const totalY = 223;
+      const cgstY = 199;
+      const sgstY = 175;
+      const grandTotalY = 148;
 
-      addText(page, font, form.cgst ? `${form.cgst}` : "", 400, 216, 10);
+      addAmountWithPaise(total, 460, 512.5, totalY);
 
-      addAmountWithPaise(cgst, 470, 512.5, 219);
+      addText(page, font, form.cgst ? `${form.cgst}` : "", 400, cgstY + 3, 10);
 
-      addText(page, font, form.sgst ? `${form.sgst}` : "", 400, 192, 10);
+      addAmountWithPaise(cgst, 470, 512.5, cgstY);
 
-      addAmountWithPaise(sgst, 470, 512.5, 195);
+      addText(page, font, form.sgst ? `${form.sgst}` : "", 400, sgstY + 3, 10);
 
-      addAmountWithPaise(grandTotal, 448, 512.5, 168);
+      addAmountWithPaise(sgst, 470, 512.5, sgstY);
+
+      addAmountWithPaise(grandTotal, 448, 512.5, grandTotalY);
 
       // =========================
       // AMOUNT IN WORDS
