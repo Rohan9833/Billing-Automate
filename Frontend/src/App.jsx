@@ -332,9 +332,10 @@ function Home() {
 
       const firstRowY = 488;
       const rowHeight = 20;
+      const maxInvoiceRows = 13;
       let srNo = 1;
 
-      items.forEach((item, index) => {
+      items.slice(0, maxInvoiceRows).forEach((item, index) => {
         const y = firstRowY - index * rowHeight;
 
         if (!item.particulars && !item.hsn && !item.qty && !item.rate) {
@@ -394,44 +395,41 @@ function Home() {
       const amountInWords = numberToWords(grandTotal);
       const words = amountInWords.split(" ");
 
-      const lineX = [130, 90, 170];
-      const lineY = [224, 198, 190];
-      const lineLimit = [29, 50, 20];
+      // Keep the amount-in-words text within the left-side ruled area.
+      // The totals column begins on the right, so use the actual font width
+      // rather than character count to decide where a line wraps.
+      const wordStartX = 88;
+      const wordMaxWidth = 382;
+      const wordSize = 8;
+      const lineHeight = 12;
+      const wordStartY = 224;
 
       let currentLine = "";
-      let lineIndex = 0;
+      let lineY = wordStartY;
 
-      words.forEach((word) => {
-        if (lineIndex >= lineLimit.length) return;
-
+      for (const word of words) {
         const testLine = currentLine ? `${currentLine} ${word}` : word;
+        const testWidth = font.widthOfTextAtSize(testLine, wordSize);
 
-        if (testLine.length <= lineLimit[lineIndex]) {
+        if (testWidth <= wordMaxWidth) {
           currentLine = testLine;
-        } else {
-          addText(
-            page,
-            font,
-            currentLine,
-            lineX[lineIndex],
-            lineY[lineIndex],
-            10,
-          );
-
-          lineIndex++;
-          currentLine = word;
+          continue;
         }
-      });
 
-      if (currentLine && lineIndex < lineLimit.length) {
-        addText(
-          page,
-          font,
-          currentLine,
-          lineX[lineIndex],
-          lineY[lineIndex],
-          10,
-        );
+        if (currentLine) {
+          addText(page, font, currentLine, wordStartX, lineY, wordSize);
+          lineY -= lineHeight;
+        }
+
+        currentLine = word;
+
+        if (lineY < 192) {
+          break;
+        }
+      }
+
+      if (currentLine && lineY >= 192) {
+        addText(page, font, currentLine, wordStartX, lineY, wordSize);
       }
 
       // =========================
